@@ -1,0 +1,220 @@
+\startappendix{State Space Model with Kalman Filter}
+\label{chapter:appendixA}
+
+We follow Koopman's (2002) notation and modify them for convenience. 
+
+\textit{Observation/measurement equation} the observations uncertainty  $p(y_{t}|x_{t},\theta)$  described by the observation equation
+
+$$y_{t} = F_{t}x_{t}+v_{t},\quad  v_{t}\sim N(0,V_{t}), \\ $$
+
+
+
+\textit{State/transition/model equation}. the process uncertainty of the unknown states $x_t$ and their evolution given by the process equations as $p(x_{t}|\theta)$. Equation of motion. Goal is to estimate $p(x_t \mid y_{1:t}, u_{1:t})$ . 
+
+
+$$  x_{t} = G_{t}x_{t-1}+B_{t} u_{t}+w_{t},\quad  w_{t}\sim N(0,W_{t}).$$
+
+
+
+\textit{Parameters to estimated $p(\theta)$ }
+
+
+$$ \theta : { x_t, F_t,  G_t ,V_{t}, W_{t} }$$
+
+
+\section{State Space Model} 
+Linear Gaussian state space model is defined in three parts:
+
+
+
+\begin{enumerate}
+	\item{Observation / measurement equation. 
+		
+		
+		the observations uncertainty  $p(y_{t}|\alpha_{t},\theta)$  described by the observation equation	$$  y_{t} = F_{t}\alpha_{t}+v_{t},\quad  v_{t}\sim \mathcal NID(0,V_{t}), $$}
+	
+	\item{State/ transition / model equation. 
+		
+		
+		the process uncertainty of the unknown states $x_t$ and their evolution given by the process equations as $p(\alpha_{t}|\theta)$. Equation of motion. Goal is to estimate $p(\alpha_{t} \mid y_{1:t}, \zeta _{1:t})$. 
+		
+		$$\alpha_{t} = G_{t}\alpha_{t-1}+B_{t} u_{t}+w_{t},\quad  w_{t}\sim \mathcal NID(0,W_{t})$$}
+	
+	\item{The initial state distribution, $$\alpha_{1}\sim \mathcal N(a_1,P_{1})$$}
+\end{enumerate}
+
+
+where 
+-  $y_{t}$ is the observation of target variable  at time $t$ , with $t = 1,..., T$ .
+
+-  $\alpha_t$ is state vector (length $m$), the unobserved / hiden states of the system. In time series setting, $\alpha_t$ will have various components such as trend, seasonality, etc.  
+
+-  $G_t$ is state transition model (A $m \times m$ matrix) which is applied to the previous state $\alpha_{t-1}$. The unobservaed state $x_t$ evolve in time according to the $G_t$. 
+
+- $F_t$ is the observation model (a $m \times 1 $)  matrix which transforms the true state space into the observed space. 
+
+- $v_t$ is the measurement errors (observation noise) which is assumed to be zero mean Gaussian white noise with covariance $V_t$;
+
+- $w_t$ is the state innovations (the process noise) which is assumed to be drawn from a zero mean multivariate normal distribution with covariance $W_t$.
+
+- $B_t$ is the model that predicts what changes based on  control/commands.
+
+- $u_t$ is the control / commands/ input  in time $t$.
+
+
+The initial state, and the noise vectors at each step 
+$${x_0, w_1, ..., w_t, v_1, ..., v_t}$$ are all assumed to be mutually \textit{independent}.
+
+
+
+
+\section{Kalman Filter} 
+
+Kalman Filter has two stages: 
+
+\begin{enumerate}
+	\item{Predicting the new state and its uncertainty}
+	\item{Correcting with the new measurement}
+\end{enumerate}
+
+
+
+
+
+\subsection{How Kalman Filter works}
+
+
+
+The \textbf{state} of the filter is represented by two variables: conditional mean(expected value) and covariance. 
+
+-    $\hat{\alpha}_{t\mid t}$, the a posteriori state estimate at time $t$ given observations up to  and including at time $t$;
+
+-    $\mathbf{P}_{t\mid t}$, the a posteriori error covariance matrix (a measure of the estimated accuracy of the state estimate).
+
+-    $\mathbf{P}_{t\mid t} = \mathrm{cov}(\alpha_t - \hat{\alpha}_{t\mid t})$
+
+-    $\mathbf{P}_{t\mid t-1} = \mathrm{cov}(\alpha_t - \hat{\alpha}_{t\mid t-1})$
+
+
+The \textbf{prediction error} is $v_t$ 
+$$\begin{aligned}
+\tilde v_t  &= y_t -E(y_{t\mid t-1} ) \\
+& = y_t -E( F_{t}\alpha_{t}+v_{t\mid t-1} ) \\
+& = y_t - F_{t} E(\alpha_{t\mid t-1} ) \\
+& = y_t -F_{t} \hat \alpha_{t}
+\end{aligned}$$
+
+and the variance of $v_t$ is  $S_{t} = \mathrm{cov}(\tilde{{v}}_t)$.
+
+
+
+
+\subsection{Two distinct phases: "Predict" and "Correct/Update".} 
+
+
+
+The time update projects the current state estimate ahead in time. The measurement update adjusts the projected estimate by an actual measurement at that time.
+
+
+
+\textbf{Predict/(state, error)stage/ (time update)} 
+
+
+
+-  	Predicted (a priori) state estimate, which follows law of motion. $G$ is not chosen by people, model of motion. $B$ and $u$ can be chosen by people to change the state $x$.  $x_t$ Estimate in next state; $x_{t-1}$ is the estimated state in last state. We know the initial state $x_0$.  
+
+-  	Kalman filter maintains the first two moments of the state distribution: 
+
+-  a posteriori state estimate;  
+
+-  a posteriori estimate error covariance equation reflects the variance of the state distribution (the second non-central moment). 
+
+$$p(\alpha_t \mid y_t) \sim N( \hat \alpha_t, P_t)$$ 
+
+
+
+$$\hat{\alpha}_{t\mid t-1} = \mathbf{G}_{t}\hat{\alpha}_{t-1\mid t-1} + \mathbf{B}_{t} \mathbf{u}_{t} $$
+
+- Predicted (a priori) estimate error covariance ahead. $P$ the previous error value at time t-1. $W$ the covariance of the error noise-describes the distribution of noise.
+
+$$\mathbf{P}_{t\mid t-1} = \mathbf{G}_{t} \mathbf{P}_{t-1\mid t-1} \mathbf{G}_{t}^\text{T} + \mathbf{W}_{t}$$
+
+
+\textbf{Correct /Update stage/  measurement update}
+
+Updated (a posteriori) state estimate with observation. $\alpha$ is the state at time $t$, and the output of the filter.   
+
+This is the estimate with measurements from observation. It is a weighted average of latest estimate and gain from observation. 
+
+
+
+$$\hat{\alpha}_{t\mid t} = \hat{\alpha}_{t\mid t-1} + \mathbf{K}_t \tilde{\mathbf{v}}_t$$
+
+
+
+when the \textit{predictive residual}  $\tilde{\mathbf{v}}_t$  is non-zero there is new information about the system so
+that the state vector $\alpha$ should be modified. The contribution of $\tilde{\mathbf{v}}_t$ to the state vector is weighted by the variance of  $\tilde{\mathbf{v}}_t$ and the \textbf{Optimal Kalman gain} $\mathbf{K}_t$ .
+
+\textit{Measurement innovation}, or the residual $\tilde{\mathbf{v}}_t$. (Prediction error /residual with new observation $\mathbf{y}_t$ available).  
+
+The residual $\tilde{\mathbf{v}}_t$ reflects the discrepancy between the predicted measurement and the actual measurement $\mathbf{y}_t$
+
+$$ \mathbf{y}_{t\mid t-1}  = \mathbf{F}_t\hat{\alpha}_{t\mid t-1} $$
+
+$$\tilde{\mathbf{v}}_t = \mathbf{y}_t -\mathbf{y}_{t\mid t-1} $$
+
+
+
+
+\textit{Optimal Kalman gain:} (contribution of new shock on state variable)  how much to trust this new observation $\mathbf{y}_t$.  $\mathbf{K}_t$ is chosen to be the gain or blending factor that minimizes the a posteriori error covariance equation $P$.
+
+
+
+$$\mathbf{K}_t = \mathbf{P}_{t\mid t-1}\mathbf{F}_t^T \mathbf{S}_t^{-1}$$
+
+
+
+$$\mathbf{K}_t = \mathbf{P}_{t\mid t-1}\mathbf{F}_t^T (\mathbf{F}_t \mathbf{P}_{t\mid t-1} \mathbf{F}_t^T + \mathbf{V}_t)^{-1}$$
+
+- \textit{Prediction error (Innovation or residual) covariance}  $\mathbf{S}_t$.  $F$ describes  how the observation reflect the state in the model (a function of how much influence goes from observation to state vector). $V$ describes the noise in the  observation $\mathbf{y}_t$.
+
+$$	\mathbf{S}_t = \mathbf{F}_t \mathbf{P}_{t\mid t-1} \mathbf{F}_{t}^\text{T} + \mathbf{V}_t $$
+
+
+
+$$\hat{\alpha}_{t\mid t} = \hat{\alpha}_{t\mid t-1} + \mathbf{K}_t (\mathbf{y}_t - \mathbf{F}_t\hat{\alpha}_{t\mid t-1})$$
+
+
+
+
+- \textit{Updated (a posteriori) estimate covariance} 
+
+
+$\mathbf{P}_{t|t}$.$\mathbf{P}_{t|t}$ is new error covariance (description of the error noise Gaussian curve) . $\mathbf{P}_{t-1}$ is the previous estimate of the error noise. 
+
+$$\mathbf{P}_{t|t} = (I - \mathbf{K}_t \mathbf{F}_t) \mathbf{P}_{t|t-1}$$
+
+
+The two phases alternate, with the prediction advancing the state until the next scheduled observation, and the update incorporating the observation. 
+
+
+The Kalman filter is a minimum mean-square error estimator. The error in the a posteriori state estimation is
+
+
+$$\alpha_{t} - \hat{\alpha}_{t\mid t}$$
+
+
+We seek to minimize the expected value of the square of the magnitude of this vector, $\textrm{E}[\|\alpha_{t} - \hat{\alpha}_{t|t}\|^2]$. This is equivalent to minimizing the trace of the a posteriori estimate covariance matrix $\mathbf{P}_{t|t}$ . 
+
+Solving this optimization problem for $K_t$ yields the Kalman gain:
+
+
+$$\mathbf{K}_t \mathbf{S}_t = (\mathbf{H}_t \mathbf{P}_{t\mid t-1})^\text{T} = \mathbf{P}_{t\mid t-1} \mathbf{F}_k^\text{T}$$
+
+
+$$\mathbf{K}_{t} = \mathbf{P}_{t\mid t-1} \mathbf{H}_t^\text{T} \mathbf{S}_t^{-1}$$
+
+
+This gain  is  the optimal Kalman gain and yields MMSE estimates.  (P solves the associated Riccati equation.)
+
+

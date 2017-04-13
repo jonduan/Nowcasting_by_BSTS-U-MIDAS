@@ -1,0 +1,297 @@
+\section{Some \LaTeX Examples}
+
+A Latex document is composed of two parts: the Preamble, and the Document Body.  The \textit{Preamble} is the site for inclusion of all document set up commands: definition of new commands, inclusion of pre\-built packages, template declaration, etc.  The \textit{Body} is where the document content is placed.
+
+\subsection{Preamble}
+ The Preamble refers to the input which precedes the documents contents.  It is the area where the author determines the general template for the document using the \textbf{$\backslash$documentclass}$[options]$\{\textit{doc style}\} command.  For example,
+ $\backslash$documentclass$[11pt]$\{\textit{article}\} declares that a document will follow the \textit{article} document class, and have 11pt font.
+ \newline\\
+ If the document requires support of any library packages they must be included in the preamble using the \textbf{$\backslash$usepackage}\{\textit{package name}\} command. For example, $\backslash$usepackage\{graphicx\} is the command needed to include the graphicx package.
+
+\subsection{Document Body}
+The document body is the area which follows the Preamble. It is defined by the \textbf{$\backslash$begin}\{\textit{document}\} and \textbf{$\backslash$end}\{\textit{document}\} commands.  The content of a Latex document is declared in the document body.  Input which appears after the $\backslash$end\{document\} command is ignored.
+
+\section{How to Number Pages}
+To number the pages of a document use the \textbf{$\backslash$pagenumbering}\{\textit{style}\} command. Numbering is defined in the documents preamble. There are several different \textit{styles} to choose from.%\\\vspace{-2mm}
+\begin{table}[h]
+    \begin{center}
+        \begin{tabular}{|l|l|}
+            \hline 
+            \textrm{\textbf{Numbering Style}}   & \textrm{\textbf{Output}} \\ \hline
+            $\backslash$pagenumbering\{arabic\} & 1, 2, 3, ...\\ \hline
+            $\backslash$pagenumbering\{roman\}  & i, ii, iii, ...\\ \hline
+            $\backslash$pagenumbering\{alph\}   & a, b, c, ...\\ \hline
+            $\backslash$pagenumbering\{Roman\}  & I, II, III, ...\\ \hline
+            $\backslash$pagenumbering\{Alph\}   & A, B, C, ... \\ \hline
+        \end{tabular}
+        \caption{Page Numbering Styles}
+        \label{tb:Xname}
+    \end{center}
+\end{table}
+
+ The numbering of pages for a thesis is, however, much more complex than for an article and, in fact, the \textit{book} class has been adopted. Make changes to those settings only if you are really familiar with \LaTeX.
+
+ \section{How to Create a Title Page}
+ A title page can be either on a separate page or integrated directly into the first page of the document. It is defined by three declarations, followed by the \textbf{$\backslash$maketitle} command as illustrated below.\\\vspace{-2mm}
+ \begin{center}
+  \texttt{
+  \begin{tabular}{l}
+    $\backslash$title\{Title of Paper\}\\
+    $\backslash$author\{Author(s) of Paper\}\\
+    $\backslash$date\{Publication Date\}\\
+    $\backslash$maketitle
+  \end{tabular}
+ }
+ \end{center}
+ The article document class defaults on an integrated title page.  To make a separate title page, use the \textbf{titlepage} option with the
+ \mbox{$\backslash$documentclass$[titlepage]$\{\textit{doc style}\}} command.
+
+ For this thesis style the title page has been completely formatted for you. Just insert the various names of people in the supervisory committee, the title, your name and so on in the location where the \textit{dummy} entries exist right now and you will be done. I would suggest to avoid doing any other changes unless you are absolutely sure!
+
+\section{How to Create an Abstract}
+ To create an abstract, place contents of abstract between the \textbf{$\backslash$begin}\{\textit{abstract}\} and \textbf{$\backslash$end}\{\textit{abstract}\} commands.
+
+\section{How to Create a Table of Contents}
+ The \textbf{$\backslash$tableofcontents} command automatically generates a table of contents from all section headers.  The default behavior for the
+ article document class is to produce an integrated table of contents.  However, the document can be altered to generate the table of contents on a
+ separate page using the \textbf{$\backslash$newpage} command (see section Formatting Extras).
+
+ For this thesis template a special command has been added, namely the \textbf{$\backslash$textTOCadd}. You can find it
+ in the file \textit{macros/style.tex}. It has to be explicitly called for an insertion into the Table of Contents and it is already in place appropriately for the existing sections and subsections.
+
+\section{How to Create Sections}
+Creating sections, subsections, and subsubsections is completed using the $\backslash$section\{Section Name\}, $\backslash$subsection\{Subsection Name\} and $\backslash$subsubsection\{Subsubsection Name\} commands, respectively.  Each sectional division is numerically labeled with respect to it's placement in the section hierarchy. For example, this section was defined with the code:
+
+\begin{center}
+  \texttt{
+  \begin{tabular}{l}
+    $\backslash$section\{How to Create Sections\}\\
+    Creating sections, subsections, and ...
+  \end{tabular}
+ }
+\end{center}
+
+It is useful to give a label using the \textbf{$\backslash$label} command to a section or subsection if a reference to it is made, so that the reference will be automatically updated should the structure of the document change.
+
+\section{How to Create a List}
+ Lists can be either enumerated, non enumerated, or descriptive. Each element of a list is termed an 'item'.
+
+ \begin{enumerate}
+    \item enter the list environment with the $\backslash$begin\{\textit{list style}\} command.
+    \vspace{-2mm}
+    \item define each item with the $\backslash$item command for non$\backslash$enumerated lists, or $\backslash$item$[\textit{label}]$ for descriptive lists.
+    \vspace{-2mm}
+    \item terminate list environment with the $\backslash$end\{\textit{list style}\} command.
+ \end{enumerate}
+
+\section{How to Insert Tables, Figures, Captions, and Footnotes}
+ The table and figure environments contain input blocks which cannot be split across pages.  Rather than divide the input of either of these
+ environments, the contents are relocated, or floated, to a location in the document which optimizes page layout with the surrounding document content.
+
+\subsection{Tables}
+ Tables are created in the tabular environment. A single parameter is used to define the number of columns and item justification pertaining to each column.  The single parameter is a combination of the following ones shown in Table \ref{tb:example1}.
+ \\
+\begin{table}
+ \begin{center}
+ \begin{tabular}{|l|l|} \hline
+    \textbf{loc}    &   \textbf{Purpose}        \\ \hline
+    l               &   left justified column   \\ \hline
+    r               &   right justified column  \\ \hline
+    c               &   centered column         \\ \hline
+    $|$             &   vertical rule           \\ \hline
+ \end{tabular}
+ \end{center}
+ \caption{Table Example}
+ \label{tb:example1}
+\end{table}
+$\backslash$$\backslash$ and \& are used to define rows and columns, respectively.  A table can either have the contents of its rows and columns lined or not.  Each line used to construct the table must be individually specified, using $|$ and $\backslash$hline for vertical and horizontal lines, respectively.
+
+Table \ref{tb:example1} was generated with the following input:
+
+\begin{verbatim}
+            \begin{center}
+                \begin{tabular}{|l|l|} \hline
+                l & left justified column   \\ \hline
+                r & right justified column  \\ \hline
+                c & centered column         \\ \hline
+                $|$ & vertical rule         \\ \hline
+             \end{tabular}
+             \end{center}
+\end{verbatim}
+
+You will want to include your table in the "List Of Tables"
+section at the beginning of your thesis. To do this you
+enclose the above table inside a table environment like so:
+
+\begin{verbatim}
+            \begin{table}
+                \begin{center}
+                ...
+                \end{center}
+                \caption{Sentence describing table.}
+                \label{unique:label}
+            \end{table}
+\end{verbatim}
+
+The caption is the text that appears underneath the table. 
+It should be short and precise. The label is a unique 
+label that you can use to refer to the table within 
+your document. You can use the \texttt{$\backslash$ref\{label\}}
+to insert the table number into your text as in Table \ref{tb:example1}.
+In the example above you would use as in:
+\begin{verbatim}
+            I am referring to Table \ref{unique:label}.
+\end{verbatim}
+
+\subsection{Figures}
+ The first step to including an externally prepared image into a document, is to declare the graphixs package into the documents preamble.
+ Integrating the image can be done using the figure environment. Enter and exit the figure environment with the \textbf{$\backslash$begin\{figure\}$[loc$]} and \textbf{$\backslash$end\{figure\}} commands, respectively. The \textit{loc} dictates the placement of the included image, and can be any of the following:
+ \begin{description}
+    \item[h here:] location in text where the environment appears
+    \vspace{-2mm}
+    \item[t top:]  top of the page
+    \vspace{-2mm}
+    \item[b bottom:] bottom of the page
+    \vspace{-2mm}
+    \item[p page of floats:] on a separate page with no text
+ \end{description}
+
+ For organizational purposes, it is best to have keep all figures in a folder together. I usually label the folder as "\textit{Figures}" (with great creativity) and I placed it in the same directory as the topmost main \textit{.tex} file.  Include the image into the document
+ with the \textbf{$\backslash$includegraphics}$[\textit{dim}]$\{path to image\} command.  \textit{dim} dictates the magnitude of the \texttt{\textbf{height}} or \texttt{\textbf{width}}.  The image is scaled proportionally.  An example and its resulting output follow below.
+ \\    \vspace{-2mm}
+ \begin{center}
+ \texttt{
+ %\begin{tabular}{l}
+ $\backslash$begin\{figure\}$[h]$\\
+    \hspace{.25in} $\backslash$centering\\
+    \hspace{.25in} $\backslash$includegraphics$[height=1in]$\{LinuxPenguin.eps\}\\
+    \hspace{.25in} $\backslash$caption\{The Linux Penguin\}\\
+ $\backslash$end\{figure\}
+ %\end{tabular}
+ }
+ \end{center}
+
+ % Use this figure inclusion with a file of type eps
+ % An example is included
+ % Compile (at least in MicTex) using the LATEX button
+ % followed by the DVIPDF button
+ % vspace{-2mm}
+ %\begin{figure}[h]
+ %   \centering
+ %   \includegraphics[height=1in]{Figures/linux_small.eps}
+ %   \caption{The Linux Penguin}
+ %   \label{fig:penguineps}
+ %\end{figure}
+
+ % Use this figure inclusion with a file of type pdf, jpg
+ % gif , etc. but not eps
+ % An example is included
+ % Compile (at least in MicTex) using the PDFLATEX button
+ %\vspace{-2mm}
+ %\begin{figure}[h]
+ %   \centering
+ %  \includegraphics[height=1in]{Figures/LinuxPenguin.pdf}
+ %   \caption{The Linux Penguin}
+ %   \label{fig:penguinpdf}
+ %\end{figure}
+
+Why is the output for the figure not shown? Because inserting figures into \LaTeX is not that simple and it is highly dependent on the system you are using together with the type of figure. This is not the place to dwell upon the inconsistencies which can make your life difficult. Suffice it to say that the original \LaTeX and its tools was geared to accept \textit{.eps} files for figures and it still maintains that expectation if one compiles using a \textit{Latex to dvi to (pdf or ps)} series of commands. On the other hand, if one uses the \textit{Latex to pdf} direct path, then files of other types are perfectly fine (e.g. \textit{pdf, jpg, gif, etc.}).
+
+If you are interested, look at the actual file for this section namely "sec\_latexhelp.tex"
+and consider the set of lines commented out just above this paragraph. There are two examples of insertion of figures, the first with the
+\textit{.eps} version and the second with the \textit{.pdf} version of the same picture (of a penguin). Delete the comments from one of the two sets and use the appropriate tools.
+
+To refer to a figure, the same approach used for tables should be used, namely a \texttt{$\backslash$ref\{label\}} command 
+which includes the unique identifier label for that figure, as
+in:
+\begin{verbatim}
+            I am referring to Figure \ref{unique:label}.
+\end{verbatim}
+
+\subsection{Captions}
+ Captions for tables and figures are created using the \textbf{$\backslash$caption}\{caption goes here\}. Captions are automatically numbered with separate counters for tables and figures. \textbf{$\backslash$caption}\{caption contents\} can only be used in the Figure or Table environment.
+
+\subsection{Footnotes}
+ Footnotes are inserted with the \textbf{$\backslash$footnote}\{footnote contents\} command.  This footnote\footnote{this is a footnote} is generated as follows:
+ \begin{center}
+    \texttt{...This footnote$\backslash$footnote\{this is a footnote\} is generated...}
+ \end{center}
+
+\section{How to Alter Font}
+\subsection{Type Style}
+ Roman Family is the default type style.  The types style can be modified using the following commands.
+ \\\vspace{-2mm}
+ \begin{center}
+    \begin{tabular}{ll}
+        \textbf{Command}                                & \textbf{Output} \\
+        $\backslash$textit\{Italic Characters\}         & \textit{Italic Characters}\\
+        $\backslash$textsl\{Slanted Chartacters\}       & \textsl{Slanted Characters}\\
+        $\backslash$textsc\{Small Cap Characters\}      & \textsc{Small Cap Characters}\\
+        $\backslash$textbf\{Boldface characters\}       & \textbf{Boldface characters}\\
+        $\backslash$textsf\{Sans Serif Characters\}     & \textsf{Sans Serif Characters}\\
+        $\backslash$texttt\{Typewriter Characters\}     & \texttt{Typewriter Characters}
+    \end{tabular}
+ \end{center}
+
+\subsection{Type Size}
+ The font size can be modified using the following commands.
+ \\\vspace{-2mm}
+ \texttt{
+ \begin{center}
+ \begin{tabular}{ll}
+    \textrm{\textbf{Command}}                   & \textrm{\textbf{Output}} \\
+    $\backslash$tiny\{tiny font\}               & \tiny{tiny font}\\
+    $\backslash$scriptsize\{scriptsize font\}   & \scriptsize{scriptsize font}\\
+    $\backslash$small\{small font\}             & \small{small font}\\
+    $\backslash$normalsize\{normalsize font\}   & \normalsize{normalsize font}\\
+    $\backslash$large\{large font\}             & \large{large font}\\
+    $\backslash$Large\{Large font\}             & \Large{Large font}\\
+    $\backslash$huge\{huge font\}               & \huge{huge font}\\
+    $\backslash$Huge\{Huge font\}               & \Huge{Huge font}
+ \end{tabular}
+ \end{center}
+ }
+
+\section{Math Mode}
+To incorperate mathematical content into a document, Latex provides three different environments: Displaymath, Math, and Equation. Brief descriptions for each environment, and environment short cuts are displayed in the table below.
+\begin{center}
+\texttt{
+\begin{tabular}{||l|l|l||} \hline
+    \textrm{\textbf{Environment}} & \textrm{\textbf{Function}}           & \textrm{\textbf{Shortcut}} \\ \hline
+    math            & displays an in-text formula       & $\backslash$ $($ \ldots $\backslash$ $)$ \\ \hline
+    displaymath     & displays an unnumbered formula    & $\backslash$ $[$ \ldots $\backslash$ $]$ \\ \hline
+    equation        & displays a numbered formula       & N/A \\ \hline
+\end{tabular}
+}
+\end{center}
+
+The following examples, using Einstein's famous \( e \doteq mc^{2} \) equation, illustrate how to include a formula into a document.
+\\ \vspace{-5mm}
+\begin{verbatim} ...Einstein's famous \( e \doteq mc^{2} \) equation, illustrate... \end{verbatim}
+ \begin{verbatim}
+ \[e \doteq mc^{2}\]
+ \end{verbatim}   \vspace{-17mm}  \[e \doteq mc^{2}\]
+ \begin{verbatim}
+ \begin{equation}
+    \doteq mc^{2}
+ \end{equation}
+ \end{verbatim}
+ \vspace{-17mm}  \begin{equation}e \doteq mc^{2} \end{equation}
+\vspace{-2mm}
+
+\section{Formatting Extras}
+The following table illustrates some formatting tips for perfecting the layout of a Latex document.
+\begin{center}
+\texttt{
+\begin{tabular}{||l|l||}\hline
+        \textrm{\textbf{Command}}           & \textrm{\textbf{Purpose}}                      \\ \hline
+        $\backslash$hspace\{\emph{len}\}    & insert a horizontal space of length \emph{len} \\ \hline
+        $\backslash$vspace\{\emph{len}\}    & insert a vertical space of length \emph{len}  \\ \hline
+        $\backslash$mbox\{\emph{text}\}     & ensure that \emph{text} is not split over multiple lines   \\ \hline
+        $\backslash$$\backslash$            & new line \\ \hline
+        $\backslash$newpage                 & start new page  \\ \hline
+        $\backslash$pagebreak               & insert a page break \\ \hline
+        \%                                  & precedes comments \\ \hline
+\end{tabular}
+}
+\end{center}

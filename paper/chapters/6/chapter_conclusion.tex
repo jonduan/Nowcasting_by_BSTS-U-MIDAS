@@ -1,0 +1,21 @@
+\startchapter{Conclusions}
+\label{concl}
+
+We discuss a new method to exploit the signals in high frequency data to improve the forecasts for low frequency data. This BSTS-U-MIDAS model merges a structural time series model, spike-and-slab prior,  Bayesian model averaging, and the Mixed-data sampling method. It utilizes the high frequency data by mixed-data sampling, and reduces the parameter proliferation problem by a spike-and-slab prior. Then a Bayesian structural time series model decomposes the target time series into trend, AR process, regression components and irregular term. By using the Kalman filter, we estimate the states and parameters in a state-space representation of the model. Last, we estimate the posterior distribution of the forecasts by drawing from the posterior distribution of the parameters many time. 
+
+Our empirical application shows that BSTS-U-MIDAS model not only improves the all over forecast accuracy, but also is capable of capturing the structural breaks or turning points. It is good at dealing with high dimension data, and especially at incorporating high frequency data. Furthermore, it is robust to irrelevant or redundant variables even though it does suffer somewhat from noisy data. 
+
+
+In conclusion, BSTS-U-MIDAS is flexible for handling high frequency and ragged data. It does not require stationarity of the time series. It does not require pre-processing of the data although the detrending and deseasonalizing do improve the forecast performance. It is easy to implement on a daily or weekly basis until  the observation of the target variable is published. And due to the recursive algorithm, it is easy to incorporate new information for predictors to update the forecast.   
+
+
+
+%\section{Further study}
+
+Our understanding of the BSTS-U-MIDAS model still has a long way to go. The most important question is simulation based evidence. Since we only have empirical evidence, to test the model with a simulated data set will be very valuable. In addition, there are many other things to be investigated. 
+
+First, it is possible to use data-based prior for estimation of the state and observation variances. For example, we can use a two-step strategy to get the prior for estimation. We can use the longer history data for GDP to run  univariate state-space model; and we can use the posterior distribution as the prior in the model with regression in the second stage. 
+
+Second, since the BSTS-U-MIDAS model still suffers from noisy data, we can choose better predictors based on previous research. For example, we can include monthly GDP, industrial production, consumption, PPI, or CPI. Also instead of stock market index return, we can model the market volatility of the financial time series instead of level of the time series by using a GARCH model.
+
+Third, we suppose that the coefficients of the regression components are time invariant. We may be better off to set a time-varying model even though it will increase the complexity of the computation.

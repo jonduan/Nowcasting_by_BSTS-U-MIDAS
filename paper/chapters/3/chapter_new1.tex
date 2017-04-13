@@ -1,0 +1,494 @@
+\startchapter{Model:  BSTS-U-MIDAS}
+\label{chapter:newsol}
+
+
+
+
+
+\section{3.1 motivation:  why btst?}   
+
+We propose a hybrid model between partial model and full system model for macroeconomic data forecast. BSTS-U-MIDAS consists of two parts: Bayesian Structural Time Series (BSTS) model and U-MIDAS model. The first part captures the dynamic of the target variable. The second part includes a large number of macroeconomic panel data as predictors. To specific, we adopt spike and slab regression for variable selection to handle the high dimensional problem, and use BMA to deal with model uncertainty and instability. 
+
+Currently, among full system approach, dynamic factor model is a good method for forecast macroeconomic variable with mixed frequency data. On the other hand, among partial model approach, MIDAS is easy implemented and flexible to handle ragged edge data problem. A combination such as dynamic factor MIDAS is good choice. However, factor model has its limitation. Indeed, factors can summarize and extract useful information from predictors, but as mentioned previous, factors might extract noise too \cite{Bai2009} (Bai and Ng 2009). Choosing factors based on prior ordering in eigenvalues does not guarantee we get factors with high predictability. Evidences show that model average outperforms the one based on factors \cite{Ouysse2013} (Ouysse, 2013). If most macroeconomic variable are highly correlated, a few selected variables are able to capture the important information just like factors can do. Researches show the forecasts from variables highly correlated the forecasts from factors \cite{Bai2009}( Bai and Ng 2009). Moreover, with the factors as predictors, forecast model has less ability for interpreting the relationship between macroeconomic variables that we are interested in. We choose spike and slab regression and BMA to deal with parameter proliferation instead of factor model.  
+
+
+We adopt U-MIDAS instead of regular MIDAS because we do not want to impose arbitrary restrictions on parameters. Since we introduce spike and slab regression and BMA in the model, the weighting scheme for handling parameter proliferation problem is not necessary. An U-MIDAS model is good enough for addressing ragged edge data problem. In our model, BSTS component only deal with the dynamics of target variable since we only focus on forecast performance and in such way BSTS has less computational burden. In our model, all predictors are whitened by detrending, deseasonalization, and scale. 
+
+
+Contribution:  we are first one to combine BSTS and MIDAS for macroeconomic nowcast. We also adopt a vertical aligned method \cite{Altissimo2010}  (Altissimo, et al, 2011) to include leading variables into MIDAS model directly. This method is very flexible and easy to implement, and the only disadvantage is that it need to recalculate the model every time when new variable comes out.
+
+
+\section{Model specification}
+
+
+\textbf{Bayesian Structural Time Series} 
+
+\begin{itemize}
+	\item {Use Kalman filter to whiten time series;}
+	\item {Control for trend and seasonality;}
+	\item {Build a model for the predictable part of time series.}
+\end{itemize}
+
+
+
+\noindent \textbf{Spike and slab regression} for variable selection 
+
+\begin{itemize}
+	\item {Find regressors that predict the target}
+\end{itemize}
+
+\noindent \textbf{Bayesian model averaging} for final forecast
+
+\begin{itemize}
+	\item {Find forecast across many possible forecast models}
+\end{itemize}
+
+
+
+The first part of our model is a structural time series model(STM). Harvey (2010) reviews  structural time series models for forecast. Structural time series model decomposes time series into different components like trend, seasonals, and cycles. The flexible structure allows the models able to handle irregular data such as missing data and mixed frequency data. The flexibility is also make forecasting and nowcasting more feasible.     
+
+According to Harvey, STM approach is different from Cox-Jenkins ARIMA approach which dominate the 1970's and 1980's time series forecasting (Harvey, 2013, Proietti, 2003). ARIMA model can be represented in state space form(SSF). With the develop of computing power and algorithm, the STM get more attention due to its good forecasting performance.
+
+
+\subsection{Local linear trend model with regression}
+
+
+Harvey (1991), Durbin and Koopman (2001), Petris et al. (2009) and many others have advocated the use of Kalman Filters for time series forecasting.
+
+
+In our model, we only include two parts: trend and regression part. According to our experiment, detrened and deseasonlized predictors and deseasonlized target variable have better forecast performance. Since our goal is to do forecast, we don't include seasonal terms in our model, but it can be done within our model \cite{Scott2014a}. 
+
+
+The "basic structural model" decomposes the time series into four components: a level, a local trend, seasonal effects and an error term. Difference from Cox-Jenkins ARIMA approach, STM is able to handle some irregular data such as nonstationary, heteroscedasticity, nonlinearity, non- Gaussianity. And Kalman filter is used to calculate likelihood function and to do inference.\\
+
+
+\textbf{Local linear trend model with regression}
+
+
+\begin{itemize}
+	\item {Observation equation(level + regression): $$y_t = \mu_t + z_t + v_{t}, \quad v_{t} \sim N(0, V)$$}
+	
+	\item {State equation 1 (random walk + trend): $$\mu_t = \mu_{t-1} + b_{t-1} + w_{1t}, \quad w_{1t} \sim N(0, W_{1})$$}
+	
+	\item {State equation 2 (random walk for trend): $$b_t = b_{t-1} + w_{2t}, \quad w_{2t} \sim N(0, W_{2})$$}
+	
+	
+	\item {State equation 3 (regression): $$z_t = \beta x_t$$}
+	
+\end{itemize}
+
+
+
+For simplification, we do not include the AR term of target variable in the model since  
+explain why an AR term will change the structure of the dynamic of model and impose an autoregressive structure on predictors (Clement, 2008). Clement(2010) also propose a transformation for avoiding the distortion data. 
+
+
+\begin{itemize}
+	\item {Parameters to estimate: $$\theta: \beta, V, W_{1}, W_{2}$$}
+	\item {States to estimate: $$\alpha:  \mu_t, b_t,  z_t$$}
+\end{itemize}
+
+
+
+
+A Kalman filter is used to estimate the paramters and states. Those estimations are used to forecast in the Kalman filter framework.\\
+
+
+
+
+\textbf{Optimal Kalman forecast}: 	
+		
+$$\hat y_t =  \mu_t + z_t + K_t ( \hat y_{t-1} - y_{t-1} )$$
+
+
+where $K$ is optimal Kalman gain which is a function of the variance terms $v_{1t},w_{1t}, w_{2t}$. In general, optimal forecast will be weighted average of past observations and current observation. The weights depend on variances of the error terms (need citation).\\ 
+
+
+\textbf{Advantages of Kalman filter}:
+
+\begin{itemize}
+	\item {No problem with mixed frequency }
+	\item {No problem with unit roots or other kinds of non-stationarity (does NOT require stationary data.)}
+	\item {No differencing or identification stage (easy to automate)}
+	\item {Nice Bayesian interpretation}
+	\item {Good forecast performance}
+\end{itemize}
+
+
+
+\textbf{Disadvantages} 
+
+\begin{itemize}
+	\item {The filter model assumes linear dependencies, and is based upon noise terms that are gaussian generated.}
+	\item {The computing complex increase linear in the number of observations and quadratic in the size of the model. This is the reason, we prefer only model the dynamic of target variable by Kalman filter and only take the $z_t = \beta x_t$ as one state.}
+\end{itemize}
+
+
+
+
+
+\subsection{MIDAS for mixed frequency data}
+
+Though Kalman filter can handle mixed frequency data problem and therefore the ragged edge data problem, Kalman filter become computationally difficult when the high dimensionality presents in the state vectors.  We try to model the dynamics of the predictors by setting $\beta's$ of predictors as state in state space specification, but it does not improve the forecast accuracy. Since our goal is to forecast, and not to fit the model,  we adopt the MIDAS model to handle the mixed frequency problem. MIDAS includes the high frequency data directly in the model, which simplify the computation and improve the efficiency. We choose U-MIDAS since it does not impose restrictions on parameter by weighting schemes. We adopt a flexible and easy way to align the ragged edge data which is similar to Altissimo et al. (2010) . 
+
+We realign each  high frequency time series in the sample to match the low frequency target variable according to the  forecast horizon  vertically. For example, to match a quarterly target variable from a daily predictor $y_{q+h}$, ($q$ is the quarter and $h$ is the forecast horizon), we realign all the predictors to current date to form a balanced data set. For a daily data, the alignment is as following:
+
+$$\tilde x_{i, q} = x_{i, q + k_{i}}$$
+
+where $k_{i}$ is number of days of the publication lags or leads for $i$th variable. For a financial data, the number of trade days in one month is 22, so we have $k \in {0, ...,22 \times 3}$. Since we focus on nowcast, we tend to choose those variables with leads. Specifically, GDP publication lag usually is two months, so for a daily data, we have $k \in {0, ...,22 \times 2}$ leads, and for a monthly data, we have $k \in {0, ..., 3 \times 2}$. 
+
+The $\tilde x_{i, q}$ is skipping sampled data; for example, if the $q$ is 25, to match up quarterly GDP data, the $\tilde x_{i, q}$ is 25th daily observation in current quarterly. Apply this method to each predictor, we get a balanced dataset $\tilde X_q$. 
+
+The main advantages of this approach is the simplicity. As long as new data come out, we can reestimate the model and get better forecasts. 
+
+The disadvantage is every time when new data come out, the balanced dataset $\tilde X_q$ changes, the correlation between variable changes, and the stability of model may change as well. (Foroni and Marcellino, 2013)
+
+
+
+\section{Variable selection: spike-slab model}
+
+In the Bayesian framework, \textit{spike and slab prior} is a effective variable selection device to achieve sparsity (George and McCulloch, 1997; Madigan and Raftery, 1994). It has been used in macroeconomic forecasting (Rodriguez and Puggioni, 2010; Kaufmann and Schumacher, 2012; Marsili, 2014).
+
+
+(here should be a graph showing the prior)
+
+If there are $N$ predictors, then there are at least $2^N$ possible linear model in the model space. Spike and slab prior is This a stochastic search variable selection strategy (SVSS), which takes prior as a mixture of two normal distributions:
+
+$$\beta_i \sim \gamma_i N(b_i,\varphi^2)   + (1-\gamma_i) N(0, c \varphi^2)$$
+
+where $\gamma$ is an indicates vector. When $\gamma_i = 1$, variable $x_i$ has non-zero coefficient in regression. $c$ is a very small positive number, so when $\gamma_i = 0$, variable $x_i$ has a zero coefficient and excluded from the regression. $\gamma_i$ is a binary random variable which can be modeled by a Binomial prior distribution.
+
+$$\gamma_i \sim \pi_{i}^{\gamma_i}(1- \pi_{i})^{1-\gamma_i}$$
+
+and we have:
+
+
+
+$$\gamma \sim \prod_{i} \pi_{i}^{\gamma_i}(1- \pi_{i})^{1-\gamma_i}$$
+
+
+ 
+Given the $p(\gamma)$, a spike-and-slab prior can be factored as:  
+
+
+$$ p(\beta,\gamma, \sigma_{-2}) = p(\beta \mid \gamma, \sigma_{-2})p(\sigma_{-2} \mid \gamma )p(\gamma)$$
+
+
+$\pi_i$ is variable $x_i$'s probability of inclusion in the regression. When detailed prior information is unavailable, it is convenient to set all $\pi_i$ equal to the same number, $\pi$. The common informative prior inclusion probability can easily be elicited from the expected number of nonzero coefficients. For example, if $n$ out of $N$ coefficients are expected to be nonzero, then we can set $\pi = n/N$ in the prior.
+
+For a variable $x_i$ with $\gamma_i = 1$, A \textit{conditionally conjugate} "slab" prior is 
+
+
+$$ \beta_{\gamma} \mid \gamma, \sigma^{2} \sim N(b_{\gamma}, \sigma^{2}(\Omega_{\gamma}^{-1})^{-1})$$
+
+$$\frac {1}{\sigma^{2}} \mid \gamma \sim  \Gamma(\frac{df}{2}, \frac{ss}{2})$$
+
+
+(here should be graph showing the spike and slab)
+
+
+$b$ is a vector of prior guesses for regression coefficients,  $\Omega^{-1}$ is a prior precision matrix, and  $\Omega_{\gamma}^{-1}$  denote rows and columns of  $\Omega^{-1}$ for which $\gamma_i = 1$.
+
+
+It is conventional to assume b = 0 (with the possible exception of the intercept term) and $\Omega^{-1} \propto X^T X$, in which case previous equation  is known as Zellner's g-prior (Chipman et al.2001).  If we have specific information about $b$, a informative prior will helpful for the estimation. Because matrix $X^T X/\sigma^{2}$ is the total Fisher information matrix in the full data, it is reasonable to parametrize $\Omega^{-1} = \kappa (X^T X)/n$, the average information available from $\kappa$ observations, which place $\kappa$ observations worth of weight on the prior mean $b$.
+
+
+
+
+$$\frac {1}{\sigma^{2}} \mid \gamma \sim  \Gamma(\frac{df}{2}, \frac{ss}{2})$$
+
+
+
+
+
+
+
+where given $\gamma$,  the precision follow a Gamma distribution with parameters $\frac{df}{2}$ and $\frac{ss}{2}$. 
+
+
+
+
+
+
+
+"Slab" prior is a very weakly informative prior which is close to flat. In some sense, the $ss$ can be interpreted as a prior sum of squares $R^2$, and the $df$ can be interpreted as a prior sample size (which decides the weight given to the guess at $R^2$). The bigger the sample size is , the more information about the parameters we have, and then  we have a better precision and a smaller variance for estimations of parameters. 
+
+
+
+
+
+
+
+To set up priors for $ss$ we can choose an expected $R^2$  from the regression. To set up prior for $df$ we can guess a number of observations worth of weight $df$ (Sccot and Varian, 2014). To utilize our previous knowledge of parameters, we can set up our proir for parameters $\pi_k, b, \Omega^{-1}, df, \text {and} \  ss$. For the simplicity, we also can just specify an expected model size $K$, and expected $R^2$, and a sample size $df$. In our case, we use the default value $R^2 = 0.5$, $df = 0.01$, and $\pi_k = 0.5$. For the expected number of predictor $k$, we choose 4. 
+
+
+\section{Estimate model using MCMC}
+ 
+
+
+
+
+
+We follow Scott and Varian(2014) \cite{Scott2014}  to implement a Markov Chain Monte Carlo(MCMC) to estimate the posterior distribution of the coefficients. For a MCMC process, we need to know the full conditionals distribution of the parameters. Scott and Varian(2014) give a detailed algorithm and R package to implement the algorithm. 
+
+
+
+\subsubsection{The conditional posterior of $\beta$ and $\sigma^2$ given $\gamma$}
+
+
+
+
+
+
+Suppose we have a BSTS model:  
+
+
+
+
+
+
+
+$$y_t = \mu_t + \beta \mathbf{x}_t + v_{t}, \quad v_{t} \sim N(0, V)$$  
+
+
+
+
+
+
+
+
+
+
+
+we subtract the target time series component $\mu$ from $y_t$, and get an axillary variable $y^* = y_t - \mu_t$.   
+
+
+
+
+
+
+
+Let vector $\mathbf{y}^* = y_{1:n}^*$ be all the information about $y^*$ up to time $n$.   
+
+and then conditional on $\gamma$, the joint posterior distribution for $\beta$ and $\sigma^2$ can be estimated from standard conjugacy formulas (Gelman et al. 2002).   
+
+
+
+
+
+
+
+$$\beta_{\gamma} \mid \sigma, \gamma, \mathbf{y}^*  \sim  N(\tilde \beta_{\gamma}, \sigma^2(V_{\gamma}^{-1}))$$  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$$\frac {1}{\sigma^{2}} \mid \gamma, \mathbf{y}^* \sim  \Gamma(\frac{N}{2}, \frac{SS_{\gamma}}{2})$$  
+
+
+
+
+
+
+
+
+
+
+
+More discussion can be found in Scott and Varian(2014)  and Marsili(2014). 
+
+
+
+
+\subsubsection{The marginal posterior of $\gamma$}
+
+
+
+
+Due to the conjugacy, we can get analytical estimate of the marginal posterior of $\gamma$ by marginalize over  $\beta_{\gamma}$ and ${1}/{\sigma^{2}}$. 
+
+
+
+
+
+
+
+$$\gamma \mid \mathbf{y}^* \sim C(\mathbf{y}^*) \frac{|\Omega^{-1}|^{1/2}}{|V_{\gamma}^{-1}|^{1/2}} \frac{p(\gamma)}{SS_{\gamma}^{\frac{N}{2} -1}}$$
+
+
+
+
+
+
+
+where $C(\mathbf{y}^*)$ is a normalising constant. 
+
+
+
+\subsubsection{MCMC process}
+
+
+
+
+
+
+Since we have state space model and spike slab regression, the parameters we need to  estimate are follows: 
+
+
+
+
+
+
+
+\textit{Parameters to estimate}: $$\theta_1: v_{1t},w_{1t}, w_{2t}$$ and $$\theta_2: \beta, \sigma^2,  \gamma$$
+
+
+
+
+
+
+
+\textit{States to estimate}: $$\alpha:  \mu_t, b_t,  z_t$$
+
+
+
+
+
+
+
+Assume that conditional on state $\alpha$, the time series components which related to $v_{1t},w_{1t},w_{2t}$ and regression components related to $\beta, \gamma$ are independent. And then we can have three steps as follows:
+
+
+
+
+
+
+
+1. simulate the state $\alpha$ from 
+
+
+
+$$\alpha \sim p(\alpha \mid \mathbf{y}, \theta_1, \theta_2)$$
+
+
+
+2. simulate the parameters for the time series components:
+
+
+
+$$\theta_1 \sim  p(\theta_1  \mid \mathbf{y},\alpha,  \theta_2)$$
+
+
+
+3. simulate the parameters for the regression components:
+
+
+
+$$\theta_2 \sim  p(\theta_1  \mid \mathbf{y},\alpha,  \theta_1)$$
+
+
+
+
+
+
+
+Iterate the three steps from a Markov chain, and we can get the posterior distribution of state $\alpha$ and parameters $\theta_1, \theta_2$ given $\mathbf{y}$. Under Gaussion assumption, first set of parameters $\theta_1$ are most variance parameters and have  conditionally independent inverse gamma full conditional distributions with conjugacy prior. The second set of parameters $\theta_2$ can be estimated by the stochastic search variable selection (SSVS) algorithm from George and McCulloch (1997), which is Gibbs sampling algorithm. 
+
+
+
+
+
+
+\section{Bayesian model average}
+
+
+
+
+
+
+
+Let $\phi$ be $\alpha, \theta_1, \theta_2$, then with the draw of state and parameters from their posterior distribution, we can get the posterior predictive distribution for target variable $y$.  
+
+
+
+$$p(\tilde y \mid \mathbf{y} = \int p((\tilde y \mid \phi)p(\phi \mid \mathbf{y})~d \phi)$$
+
+
+
+For each draw of $\phi^{(i)}$ from $p(\phi \mid \mathbf{y})$, we can sample a $\tilde y$ from $p((\tilde y \mid \phi)$. The sample of draws from posterior predictive distribution $p(\tilde y \mid \mathbf{y}$ can give us the information we need for forecasting. To summarize the information, we can use mean as a point forecast of the target variable $y$.
+
+To consider the model uncertainty, we also can get forecast interval or use histogram or density to summarize the forecast. To understand the impact of the predictors on target variable, we also can get the inclusion probability of specific predictors by summary of $\gamma_k$. For example, we can take average over draws of $\gamma$ to see which predictors have high probability of being in regression. 
+
+
+\section{The approach of informative prior for coefficients}
+
+(to do)
+
+Instead of diffuse prior, we also can use data from observation to get prior as initial value in Kalman filter algorithm. 
+
+
+
+
+
+
+We can use a two steps strategy to get the prior for coefficients for the state vector and since we have previous data for target variable.  Then we also can get the prior coefficient for some predictors before we run full model as long as those predictors .  
+
+
+
+1. first stage: estimate a univariate structural time series model only including the target variable.  
+
+
+
+$$y_t = \mu_t +  v_{t}, \quad v_{t} \sim N(0, V)$$  
+
+
+
+
+$$\mu_t = \mu_{t-1} + b_{t-1} + w_{1t}, \quad w_{1t} \sim N(0, W_{1})$$  
+
+
+
+
+$$b_t = b_{t-1} + w_{2t}, \quad w_{2t} \sim N(0, W_{2})$$  
+
+
+
+
+
+And the estimated $\hat \theta: \hat v_{1t},\hat w_{1t}, \hat w_{2t}$ can be the prior for the second stage.  
+
+
+
+
+
+2. Second stage: based on informative prior, we can implement Bayesian variable selection and estimate all the parameters including $\beta, \gamma$.   
+
+
+
+$$y_t = \mu_t + z_t + v_{t}, \quad v_{t} \sim N(0, V)$$  
+
+
+
+$$z_t = \beta x_t$$  
+
+
+
+
+
+
+
+
+
+
+%\input chapters/3/sec_latexhelp

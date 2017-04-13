@@ -1,0 +1,37 @@
+\startfirstchapter{Introduction}
+\label{chapter:introduction}
+
+
+Utilizing the abundant high frequency data such as financial daily data is of great interest in forecasting or nowcasting low frequency macroeconomic variables such as (quarterly) GDP.  The goal of this thesis is to provide a comprehensive method for short-term forecasting using mixed-frequency data sets. Our BSTS-U-MIDAS (Bayesian Structural Time Series - Unrestricted - Mixed-Frequency Data Sampling) Model incorporates four advanced econometric techniques. 
+
+Those four methods are the mixed-data sampling (MIDAS) model dealing with mixed frequency data; the Kalman filter (state-space model) for filtering the data; a spike-and-slab regression for variable selection, and Bayesian model averaging (BMA) for forecasting. The BSTS approach estimates the states and parameters of a model by using Markov Chain Monte Carlo (MCMC) simulation. Our BSTS-U-MIDAS Model outperforms the ARIMA and Boosting models in terms of  MAE (mean absolute error) and MAPE (mean absolute percentage error) in an empirical application of forecasting GDP for Canada. 
+
+The BSTS-U-MIDAS model shows strong capability to capture the structural breaks in the economy and an ability to extract signals from high dimensional data sets with high frequency data. The BSTS-U-MIDAS has those advantages because it is flexible in terms of capturing the dynamics of stochastic processes and incorporating leading variables. Firstly, structural time series model decomposes a time series into several stochastic processes such as trend, seasonality, cycle, and irregular component. Those stochastic is helpful to avoid the influence of structural breaks.  Secondly, a MIDAS model is able to transfer high-frequency leading variables to a low-frequency  data matrix, therefore enhancing the ability to detect structural breaks.  Furthermore, the BSTS-U-MIDAS model also show strong robustness to over-fitting even though it also suffers slightly from noisy data. The robustness of BSTS-U-MIDAS comes from a spike-and-slab regression and Bayesian model average. Firstly, a spike-and-slab prior helps to select important variables and maintain the sparsity of the model. Secondly, BMA helps to reduce the model uncertainty and instability.
+
+
+
+With the advance of statistical technique and computational power, this kind of practice is much more easily implemented than before. The mixed-data sampling (MIDAS) model is now a widely used technique in economic forecasting \cite{Ghysels2007}. However, incorporating high frequency data causes some problems such as parameters proliferation and ragged edge data.  
+
+Parameters proliferation (``curse of dimensionality",or, fat regression) refers to the case where $N$ is greater than $T$, where $N$ is the number of regressors,  and $T$ is the number of observations on the time series. In this situation, the number of regressors is such large that there is not enough data available for the computation in terms of degrees of freedom. Many solutions have been developed to reduce the dimension such as Bridge models, MIDAS with weighting schema \cite{Ghysels2012a}, factor MIDAS\cite{Stock2006}, PCA \cite{Boivin2006a}, ridge regression, and lasso regression\cite{DeMol2008} . We incorporate a Bayesian structural time series model (BSTS) into a MIDAS model to solve the ``curse of dimensionality" problem. In BSTS model, a spike-and-slab regression is used to do variable selection and Bayesian model averaging is used to combine possible models for improving forecasts.   
+
+
+Ragged edge data means that different data have different publication lags and therefore different availability. At a specific time point, differences in the availability of data make the data set unbalanced, which makes forecasting more difficult. For example, in a specific day, the quarterly, monthly, and weekly data are not available yet although some daily data such as a stock price index are already available. In  practice, realigning the data by filling the missing data is common. The missing data are usually estimated by an AR process or the Kalman filter \cite{Foroni2013}. Alternatively, in a MIDAS model, available predictors are chosen in terms of the forecasting horizon. Available data, lags or leads, are included in the regression directly. Incorporating MIDAS into a BSTS model makes the model more flexible in its handling of the ragged edge data. 
+
+
+\citeA{Scott2014a}  propose a Bayesian structural time series model(BSTS) for nowcasting an economic time series variable by using Google search engine query data as a predictor. We combine their BSTS and U-MIDAS model for nowcasting low frequency macroeconomic variable using high frequency data such as financial data. 
+ 
+Incorporating the BSTS approach in a MIDAS model has many good features.  BSTS-U-MIDAS is flexible. The BSTS component can handle regular and irregular data using a state-space form. The MIDAS components can address the unbalanced data set problem by transforming data in different frequencies. BSTS-U-MIDAS is robust. With the state-space form and the Kalman filter, we can relax the assumption about stationarity and normality. With the MIDAS setup, the model is more robust to specification errors than is a full system model  \cite{Bai2013} . BSTS-U-MIDAS improves forecast accuracy. The Kalman filter can remove noise and extract signals, BMA ensembles estimations from many small regressions to overcome over-fitting and model instability, and the use of spike-and-slab prior picks up those regressors with high influence on the target variable to achieve model sparsity. In the Bayesian framework, BSTS-U-MIDAS  provides not only point estimates but also density predictions.
+
+
+Our empirical application of the BSTS-U-MIDAS model to forecast quarterly GDP for Canada shows an improvement in accuracy in terms of mean absolute error (MAE) than a benchmark ARIMA model and a Boosting model. 
+
+Our BSTS-U-MIDAS model can be used in many fields. In the macroeconomics variable forecasting, many high frequency financial data such as daily interest rates, or weekly or monthly labor market data can be utilized by using a BSTS-U-MIDAS model.
+
+
+This thesis is organized by follows. Chapter 2 provides a literature review. The model and theory are discussed in Chapter 3. Chapter 4 focuses on the implementation of the model in an empirical application of forecasting quarterly GDP using monthly unemployment rate,  monthly interest rate spread, monthly housing starts, the daily oil price and the daily  S\&P/TSX Composite Index. Our conclusions and some suggestions for further study, are given in Chapter 5.
+
+
+%\input chapters/1/sec_intro
+%\input chapters/1/sec_review
+%\pagebreak
+
