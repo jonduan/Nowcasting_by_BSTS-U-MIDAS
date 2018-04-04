@@ -8,7 +8,7 @@ Using high frequency data for forecasting or nowcasting, we have to deal with th
 
 - the high dimensionality (fat regression, parameter proliferation) problem, 
 
--and the unbalanced data problem (miss- ing observations, ragged edge data). 
+- and the unbalanced data problem (miss- ing observations, ragged edge data). 
 
 We propose a BSTS-U-MIDAS model (Bayesian Structural Time Series-Unlimited-Mixed-Data Sampling model) to handle these problem. This model consists of four parts. 
 
